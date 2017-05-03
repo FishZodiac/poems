@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+	<title>A POEM</title>
+	<style type="text/css">
+    *{font-family: 'Microsoft YaHei'}
+		body{margin: 0;padding: 0;background: #f9f9f9}
+		.poemMain{max-width: 250px;margin: 30px auto;background: #fff;border: 1px solid #eee;padding: 10px 15px;min-height: 500px;box-shadow: 0 0 2px #eee;position: relative;}
+		.title{padding: 10px 2px 0 2px;border-bottom: 1px solid #eee;position: relative}
+		#title{color: #555}
+		.content{padding: 10px 2px;color: #777;line-height: 28px}
+		.refresh{border: 1px solid #afafaf;
+    padding: 5px 20px;
+    background: none;
+    color: #666;
+    position: absolute;
+    bottom: 30px;
+    right: 20px;}
+    .edit{position: absolute;right: 5px;bottom: 20px;min-width: 17px;padding:2px;text-align: center;color: #aaa;border: 1px solid #aaa}
+    input{border: none;padding: 3px 0 0px 10px;border-bottom: 1px solid #eee;height: 30px;color:#777;}
+    input:active{border:none;}
+	</style>
+</head>
+<body>
+<div class="poemMain">
+	<div class="title">
+		<h3 id="title"></h3>
+        <div class="edit" onclick="edit()">Edit</div>
+	</div>
+	<div class="content" id="content"></div>
+	<button class="refresh" onclick="refresh()">换一首</button>
+</div>
+
+
+<script type="text/javascript">
+	var arrDict=["东风","何处","人间","风流","归去","春风","西风","归来","江南","相思","梅花","千里","回首","明月","多少","如今","阑干","年年","万里","一笑","黄昏","当年","天涯","相逢","芳草","尊前","一枝","风雨","流水","依旧","风吹","风月","多情","故人","当时","无人","斜阳","不知","不见","深处","时节","平生","凄凉","春色","匆匆","功名","一点","无限","今日","天上","杨柳","西湖","桃花","扁舟","消息","憔悴","何事","芙蓉","神仙","一片","桃李","人生","十分","心事","黄花","一声","佳人","长安","东君","断肠","而今","鸳鸯","为谁","十年","去年","少年","海棠","寂寞","无情","不是","时候","肠断","富贵","蓬莱","昨夜","行人","今夜","谁知","不似","江上","悠悠","几度","青山","何时","天气","惟有","一曲","月明","往事","苍茫"];
+
+    var arrSongCi = [
+	    {'Title':"天净沙", 'Len':28},
+	    {'Title':"如梦令", 'Len':33},
+	    {'Title':"清平乐", 'Len':46},
+	    {'Title':"西江月", 'Len':50},
+	    {'Title':"采桑子", 'Len':44},
+	    {'Title':"忆江南", 'Len':27}];
+
+	var arrTemplet = [[6, 6, 6, 4, 6 ],[6, 6, 5, 6, 4, 6],[4, 5, 7, 6, 0, 6, 6, 6, 6],[6, 6, 7, 6, 0, 6, 6, 7, 6],[7, 4, 4, 7, 0, 7, 4, 4, 7 ],[3, 5, 7, 7, 5]];
+
+	var arrCharDict=["东","何","人","风","归","春","西","江","相","梅","回","明","多","如","阑","年","当","天","芳","流","依","故","无","斜","深","时","平","凄","匆","功","今","桃","扁","消","憔","芙","神","心","佳","长","断","鸳","为","去","少","海","寂","富","蓬","行","谁","悠","青","惟","月","往","苍","处","间","来","南","思","花","里","首","笑","涯","逢","草","前","枝","雨","水","旧","吹","情","阳","知","见","节","生","凉","色","名","点","限","上","柳","湖","舟","息","悴","事","蓉","仙","片","分","声","安","君","鸯","棠","寞","候","莱","夜","似","度","山","气","曲","茫"];
+
+    
+        function createMathNum(len){
+        	var mathNum = "";
+        	for (var i = 0; i < len; i++) {
+        		mathNum += Math.floor(Math.random()*100);
+        	}
+
+        	return mathNum;
+        }
+
+        function MathNum(maths){
+        	var _maths = maths;
+        	for (var i = 0; i < maths.length; i++) {
+        		if( i % 2 === 0 )
+                _maths += (maths.substr(i, 1)+1 ) % 10;
+            else
+                _maths += maths.substr(i, 1);
+        	}
+        	for (var i = 0; i < maths.length; i++) {
+        		if( i % 2 === 1 )
+                _maths += (maths.substr(i, 1)+1 ) % 10;
+            else
+                _maths += maths.substr(i, 1);
+        	}
+        	/*// Shift
+        $strInShift = substr($strIn, 1, strlen($strIn)-1) + substr($strIn, 0, 1);
+        $strResult .= $strInShift;*/
+        	var strshift = maths.substr(1,maths.length-1)+maths.substr(0,1);
+        	_maths +=strshift;
+        	for (var i = 0; i < maths.length; i++) {
+        		if( i % 2 === 0 )
+                _maths += (maths.substr(i, 1)+1 ) % 10;
+            else
+                _maths += maths.substr(i, 1);
+        	}
+        	for (var i = 0; i < maths.length; i++) {
+        		if( i % 2 === 1 )
+                _maths += (maths.substr(i, 1)+1 ) % 10;
+            else
+                _maths += maths.substr(i, 1);
+        	}
+
+        	return _maths;        	
+        }
+
+        function mapToSongCi(mathNums){
+        	var strResult = "";
+            var mathObj = {};
+
+            if( mathNums.length % 2 === 1){
+                mathNums += Math.floor(Math.random()*10);
+            }
+            for (var i=0; i<mathNums.length ; i+=2){
+                if (mathObj[mathNums.substr(i, 2)]) {
+
+                }else{
+                   mathObj[mathNums.substr(i, 2)] = 1;
+                   console.log(mathNums.substr(i, 2)+"&&&"+arrDict[parseInt(mathNums.substr(i, 2))]);
+                   strResult +=arrDict[parseInt(mathNums.substr(i, 2))];
+                }
+            }
+            return strResult;
+        }
+
+        function formatSongci(songci){
+        	var poem = "";
+        	var index = Math.round(Math.random()*5);
+        	var title = arrSongCi[index].Title;
+        	document.getElementById("title").innerHTML=title;
+        	var format = arrTemplet[index];
+        	var start=0;
+        	var end=songci.length;
+        	for(var k in format){
+        		var i = 0;
+                poem += "<span>"
+        		for ( ;i < format[k]-1 && end>0;) {
+        			poem += songci.substr(start, 2);
+        			start +=2;
+        			end -=2;
+        			i+=2
+        		}
+        		for(; i<format[k]; i++){
+        			poem += arrCharDict[Math.floor(Math.random()*111)];
+        		}
+        		poem+="</span><br />";
+        	}
+        	return poem;
+
+        }
+
+        var strResult = createMathNum(8);
+        strResult = MathNum(strResult);
+        strResult = mapToSongCi(strResult);
+        strResult = formatSongci(strResult);
+        document.getElementById("content").innerHTML=strResult;
+
+        function refresh(){
+        	window.location.href=window.location.href+"?id="+10000*Math.random();
+        }
+        function edit(){
+            var _span = document.getElementsByTagName('span');
+            var newPoem = "";
+            for (var i = 0; i < _span.length; i++) {
+                newPoem += "<input type='text' value='"+_span[i].innerHTML+"'/>";
+            }
+            document.getElementById("content").innerHTML=newPoem;
+        }
+</script>
+</body>
+</html>
